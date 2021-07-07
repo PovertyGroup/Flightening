@@ -1,6 +1,6 @@
 <template lang="pug">
   .container
-    a-card.login-card(title="登录到Flightening")
+    a-card.login-card(title="登录到 Flightening 后台")
       Logo(style="max-width: 50%; margin-bottom: 50px")
       a-form.login-form(:model="formState")
         a-form-item(ref="username" name="username")
@@ -15,8 +15,6 @@
           a-checkbox(v-model:checked="formState.rememberme" style="float: left") 记住我
         a-form-item
           a-button(type="primary" style="width: 100%; margin-top: 20px" size="large" :disabled="!loginButtonEnabled" @click="login" :loading="loading") 登陆
-          a-button(type="link" style="width: 100%; margin-top: 0" @click="gotoRegister") 注册账号
-      FooterMini
 </template>
 
 <script>
@@ -46,13 +44,10 @@ export default {
   },
   mounted() {
     if (this.$auth.loggedIn) {
-      this.$router.push('/home')
+      this.$router.push('/admin')
     }
   },
   methods: {
-    gotoRegister() {
-      this.$router.push('/register')
-    },
     refreshLoginButtonStatus() {
       const usernameValid = this.formState.userName !== ''
       const passwordValid = this.formState.password !== ''
@@ -71,8 +66,7 @@ export default {
             password: this.formState.password,
           },
         })
-        // TODO
-        // this.$router.push('/admin')
+        this.$router.push('/admin')
       } catch (e) {
         if (e.response && e.response.data) {
           message.error(e.response.msg)

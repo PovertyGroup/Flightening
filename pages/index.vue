@@ -5,12 +5,12 @@
       <h1 class="title">FLightening</h1>
       <div class="links">
         <a
-          href="http://localhost:3000/home"
+          href="http://localhost:3000/login"
           target="_blank"
           rel="noopener noreferrer"
           class="button--green"
         >
-          主页
+          后台管理
         </a>
       </div>
     </div>

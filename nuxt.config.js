@@ -36,9 +36,9 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
-    '@nuxtjs/auth-next',
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    '@nuxtjs/auth-next',
     // https://go.nuxtjs.dev/pwa
     '@nuxtjs/pwa',
   ],
@@ -64,11 +64,11 @@ export default {
         },
         endpoints: {
           login: {
-            url: 'http://localhost:8080/v1/auth/signin',
+            url: 'http://localhost:8080/v1/admin/signin',
             method: 'post',
           },
           logout: false,
-          user: { url: '/v1/user/me', method: 'get' },
+          user: false,
         },
       },
     },

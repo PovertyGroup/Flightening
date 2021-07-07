@@ -1336,10 +1336,21 @@
     jwt-decode "^3.1.2"
     requrl "^3.0.2"
 
-"@nuxtjs/axios@^5.13.0", "@nuxtjs/axios@^5.13.4":
+"@nuxtjs/axios@^5.13.0":
   version "5.13.4"
   resolved "https://registry.nlark.com/@nuxtjs/axios/download/@nuxtjs/axios-5.13.4.tgz#32ef656b7fdec1e53acdfdff6fb1844a1698af1e"
   integrity sha1-Mu9la3/eweU6zf3/b7GEShaYrx4=
+  dependencies:
+    "@nuxtjs/proxy" "^2.1.0"
+    axios "^0.21.1"
+    axios-retry "^3.1.9"
+    consola "^2.15.3"
+    defu "^5.0.0"
+
+"@nuxtjs/axios@^5.13.6":
+  version "5.13.6"
+  resolved "https://registry.nlark.com/@nuxtjs/axios/download/@nuxtjs/axios-5.13.6.tgz?cache=0&sync_timestamp=1622640466922&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40nuxtjs%2Faxios%2Fdownload%2F%40nuxtjs%2Faxios-5.13.6.tgz#6f4bbd98a3a7799a5d2c0726c6ad2a98aa111881"
+  integrity sha1-b0u9mKOneZpdLAcmxq0qmKoRGIE=
   dependencies:
     "@nuxtjs/proxy" "^2.1.0"
     axios "^0.21.1"
