@@ -127,38 +127,57 @@
           a-card.card.shadow
             div(style="display: flex; width: 100%; justify-content: space-between;")
               h1(style="font-weight: bold; margin-bottom: 20px;") 省份管理
-              a-button(type="link" @click="fetchProvinceData()")
-                ReloadOutlined
+              div
+                a-button(type="link" @click="addProvince()")
+                  PlusOutlined
+                a-button(type="link" @click="fetchProvinceData()")
+                  ReloadOutlined
             a-table(:columns="provinceColumns" :data-source="provinceData")
               template(slot="idRender" slot-scope="text")
                 code {{ text }}
               template(slot="actionRender" slot-scope="record")
                 a(@click="showModal(record.id, record.name)") 修改
             a-modal(v-model:visible="modalVisible" title="修改省份" @ok="handleOk")
-              a-form
+              a-form(layout="horizontal" v-bind="formLayout")
                 a-form-item(label="id")
                   a-input(disabled v-model:value="selectedProvinceId")
                 a-form-item(label="名称")
                   a-input(v-model:value="selectedProvinceName")
+          a-modal(v-model:visible="addingProvinceModal" title="添加省份" @ok="addingProvinceHandleOk")
+            a-form(layout="horizontal" v-bind="formLayout")
+              a-form-item(label="名称")
+                a-input(v-model:value="addingProvinceName")
         .content-wrap(v-if="menuSelectedKey == '6'")
           a-card.card.shadow
             div(style="display: flex; width: 100%; justify-content: space-between;")
               h1(style="font-weight: bold; margin-bottom: 20px;") 城市管理
-              a-button(type="link" @click="fetchCityData()")
-                ReloadOutlined
+              div
+                a-button(type="link" @click="addCity()")
+                  PlusOutlined
+                a-button(type="link" @click="fetchCityData()")
+                  ReloadOutlined
             a-table(:columns="cityColumns" :data-source="cityData")
               template(slot="idRender" slot-scope="text")
                 code {{ text }}
               template(slot="actionRender" slot-scope="record")
                 a(@click="showCityModal(record.id, record.code, record.name)") 修改
             a-modal(v-model:visible="cityModalVisible" title="修改城市" @ok="handleCityOk")
-              a-form
+              a-form(layout="horizontal" v-bind="formLayout")
                 a-form-item(label="id")
                   a-input(disabled v-model:value="selectedcityId")
                 a-form-item(label="名称")
                   a-input(v-model:value="selectedcityName")
                 a-form-item(label="代码")
                   a-input(v-model:value="selectedcityCode")
+          a-modal(v-model:visible="addingCityModal" title="添加城市" @ok="addingCityHandleOk")
+            a-form(layout="horizontal" v-bind="formLayout" :rules="cityRules" :model="addingCityForm")
+              a-form-item(label="名称" name="addingCityName")
+                a-input(v-model:value="addingCityForm.addingCityName")
+              a-form-item(label="省份" name="addingCityProvince")
+                a-select(v-model:value="addingCityForm.addingCityProvince")
+                  a-select-option(v-for="province in provinceData" :key="province.id" :value="province.id") {{ province.name }}
+              a-form-item(label="代码" name="addingCityCode")
+                a-input(v-model:value="addingCityForm.addingCityCode")
 </template>
 
 <script>
@@ -178,6 +197,7 @@ import {
   CheckOutlined,
   CloseOutlined,
   ReloadOutlined,
+  PlusOutlined,
 } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
 
@@ -426,6 +446,7 @@ export default {
     CheckOutlined,
     CloseOutlined,
     ReloadOutlined,
+    PlusOutlined,
   },
   data() {
     return {
@@ -451,6 +472,33 @@ export default {
       selectedcityId: 0,
       selectedcityName: '',
       selectedcityCode: '',
+
+      addingProvinceName: '',
+      addingCityForm: {
+        addingCityName: '',
+        addingCityCode: '',
+        addingCityProvince: 1,
+      },
+
+      addingProvinceModal: false,
+      addingCityModal: false,
+
+      formLayout: {
+        labelCol: { span: 4 },
+        wrapperCol: { span: 14 },
+      },
+      cityRules: {
+        addingCityCode: [
+          { required: true, message: '请输入城市代码', trigger: 'blur' },
+          { min: 3, max: 3, message: '代码长度为3', trigger: 'blur' },
+        ],
+        addingCityName: [
+          { required: true, message: '请输入城市名', trigger: 'blur' },
+        ],
+        addingCityProvince: [
+          { required: true, message: '请选择城市', trigger: 'blur' },
+        ],
+      },
     }
   },
   mounted() {
@@ -530,7 +578,7 @@ export default {
           name: this.selectedProvinceName,
         })
         .catch((e) => {
-          message.error(e.data.msg)
+          message.error(e.response.data.msg)
         })
         .then(() => {
           this.fetchProvinceData()
@@ -551,12 +599,46 @@ export default {
           code: this.selectedcityCode,
         })
         .catch((e) => {
-          message.error(e.data.msg)
+          message.error(e.response.data.msg)
         })
         .then(() => {
           this.fetchCityData()
         })
       this.cityModalVisible = false
+    },
+    addProvince() {
+      this.addingProvinceModal = true
+    },
+    addProvinceHandleOk() {
+      this.$axios
+        .post('http://localhost:8080/v1/admin/province', {
+          name: this.addingProvinceName,
+        })
+        .catch((e) => {
+          message.error(e.response.data.msg)
+        })
+        .then(() => {
+          this.fetchProvinceData()
+        })
+      this.addingProvinceModal = false
+    },
+    addCity() {
+      this.addingCityModal = true
+    },
+    addingCityHandleOk() {
+      this.$axios
+        .post('http://localhost:8080/v1/admin/city', {
+          name: this.addingCityForm.addingCityName,
+          code: this.addingCityForm.addingCityCode,
+          province: this.addingCityForm.addingCityProvince,
+        })
+        .catch((e) => {
+          message.error(e.response.data.msg)
+        })
+        .then(() => {
+          this.fetchCityData()
+        })
+      this.addingCityModal = false
     },
   },
 }
